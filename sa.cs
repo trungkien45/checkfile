@@ -43,10 +43,10 @@
                 {
                     FileAttributes attr = File.GetAttributes(s3);
                     if (!attr.HasFlag(FileAttributes.Directory))
-                        return false;
+                        return true;
                 }
             }
-            return true;
+            return false;
 
         }
         public static bool CheckPathIsDirectory(string path)
