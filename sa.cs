@@ -1,8 +1,12 @@
-        public static bool CheckPathVaild(string path)
+        private static bool CheckPathVaild(string path)
         {
             try
             {
                 var s = Path.GetFullPath(path);
+                if (CheckHasFileInPath(s))
+                {
+                    return false;
+                }
                 s = s.Substring(Path.GetPathRoot(s).Length);
                 var s2 = s.Split(Path.DirectorySeparatorChar);
                 return s2.All(item => !item.Any(p => Path.GetInvalidFileNameChars().Contains(p)));
@@ -11,26 +15,6 @@
             {
                 return false;
             }
-        }
-        public static bool CheckPathIsFile(string path)
-        {
-            if (CheckPathVaild(path))
-            {
-                var s = Path.GetFullPath(path);
-                if(CheckHasFileInPath(s))
-                {
-                    return false;
-                }
-                if (!Directory.Exists(s))
-                {
-                    if (!s.EndsWith(Path.DirectorySeparatorChar))
-                    {
-                        s = Path.GetFileName(s);
-                        return !string.IsNullOrEmpty(s);
-                    }
-                }
-            }
-            return false;
         }
         private static bool CheckHasFileInPath(string path)
         {
@@ -49,15 +33,27 @@
             return false;
 
         }
+        public static bool CheckPathIsFile(string path)
+        {
+            if (CheckPathVaild(path))
+            {
+                var s = Path.GetFullPath(path);
+                if (!Directory.Exists(s))
+                {
+                    if (!s.EndsWith(Path.DirectorySeparatorChar))
+                    {
+                        s = Path.GetFileName(s);
+                        return !string.IsNullOrEmpty(s);
+                    }
+                }
+            }
+            return false;
+        }
         public static bool CheckPathIsDirectory(string path)
         {
             if (CheckPathVaild(path))
             {
                 var s = Path.GetFullPath(path);
-                if (CheckHasFileInPath(s))
-                {
-                    return false;
-                }
                 if (Directory.Exists(s))
                 {
                     return true;
@@ -65,8 +61,7 @@
                 if (s.EndsWith(Path.DirectorySeparatorChar))
                 {
                     return true;
-                }
-                
+                } 
             }
             return false;
         }
